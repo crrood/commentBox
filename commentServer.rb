@@ -1,5 +1,6 @@
 # requiref
 require "socket"
+require "uri"
 
 # connection parameters
 host = "localhost"
@@ -15,8 +16,12 @@ loop do
 	# threaded to support multiple clients
 	Thread.start(webserver.accept) do |session|
 		
-		# print request
-		puts "session.gets: " + session.gets
+		# output request
+		request = session.gets
+		puts "request: " + request
+
+		# parse input
+		puts input = request[(request.index("input") + 6)..(request.index("HTTP") - 2)]
 		
 		# response headers
 		session.puts "http/1.1 200 ok"
@@ -24,7 +29,10 @@ loop do
 		session.puts ""
 
 		# response body
-		session.print "Hello world!"
+		session.print "input string: " + URI.unescape(input)
+
+		# write to file
+		File.open("logs.txt", "a") { |file| file.write(URI.unescape(input) + "\r\n") }
 
 		# send and close response
 		session.close

@@ -57,7 +57,7 @@ function httpGet(host, input, onResponse) {
 		xmlHttp.onreadystatechange = function() {
 
 			// successfully completed query
-			if (this.readyState == 4) {
+			if (this.readyState == 4 && this.status) {
 				onResponse(this);
 			}
 
