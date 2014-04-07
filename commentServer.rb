@@ -16,6 +16,9 @@ loop do
 	# threaded to support multiple clients
 	Thread.start(webserver.accept) do |session|
 		
+		# open log
+		log = File.open("logs.txt", "a")
+
 		# output request
 		request = session.gets
 		puts "request: " + request
@@ -32,10 +35,11 @@ loop do
 		session.print "input string: " + URI.unescape(input)
 
 		# write to file
-		File.open("logs.txt", "a") { |file| file.write(URI.unescape(input) + "\r\n") }
+		log.write(URI.unescape(input) + "\r\n\r\n")
 
 		# send and close response
 		session.close
+		log.close
 
 		puts "session closed\n\r"
 
