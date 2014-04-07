@@ -1,0 +1,74 @@
+<title>Comments</title>
+
+<div style="background-color: #444; width=100%; height=100%; position:absolute;">
+	<input type="text" id="textBox"></input>
+	<input type="button" value="Send" id="submitButton"></input>
+</div>
+
+
+<script>
+
+// constants
+var HOST = "http://localhost:8080";
+
+// pointer to submitButton
+var submitButton = document.getElementById("submitButton");
+submitButton.addEventListener("click", SubmitButtonClicked);
+
+// function to submit form
+function SubmitButtonClicked(e) {
+
+	console.log("SubmitButtonClicked");
+	
+	// read from input form
+	input = document.getElementById("textBox").value;
+	
+	// send request
+	httpRequest = httpGet(HOST, input, handleResponse);
+	
+	console.log("SubmitButtonClicked end");
+
+}
+
+// callback from form submit
+function handleResponse(request) {
+
+	console.log("handleResponse");
+	console.log(request.responseText);
+
+}
+
+// queries a server
+// returns an XMLHttpRequest object
+function httpGet(host, input, onResponse) {
+	try{
+
+		// creates XMLHttpRequest object
+		var xmlHttp = new XMLHttpRequest();
+		
+		// translates input to URI
+		input = input !== undefined ? "/?input=" + encodeURIComponent(input) : "";
+		
+		// contact server
+		xmlHttp.open("GET", host + input);
+		xmlHttp.send(null);
+		
+		// return server response
+		xmlHttp.onreadystatechange = function() {
+
+			// successfully completed query
+			if (this.readyState == 4) {
+				onResponse(this);
+			}
+
+		}
+
+	} catch(e) {
+
+		// output any errors
+		console.log(e);
+
+	}
+}
+
+</script>
